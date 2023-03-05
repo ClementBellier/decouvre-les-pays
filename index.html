@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <link
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      rel="stylesheet"
+    />
+    <title>Concours Le Repaire du Web - API REST</title>
+  </head>
+  <body>
+    <section id="all" class="ontop">
+      <header>
+        <h1>Découvre les pays</h1>
+        <p>Clique sur un drapeau pour en savoir plus</p>
+      </header>
+      <div id="list" class="scrollbar"><div id="loader" class="loader"></div></div>
+    </section>
+    <section id="country" class="disappear">
+      <div id="countryLoader" class="background-loader"><div class="loader"></div></div>
+      <header>
+        <img id="flag" src="" alt="" />
+        <div>
+          <h1 id="name"></h1>
+          <p id="official"></p>
+        </div>
+        <div id="close">
+          <svg viewBox="0 0 64 64"><use href="#close-cross" /></svg>
+        </div>
+      </header>
+      <div class="infos-container">
+        <div id="leftShadow" class="left-shadow shadow" style="opacity:0;"></div>
+        <div id="rightShadow" class="right-shadow shadow"></div>
+        <div class="country-infos">
+          <div class="card-container">
+            <div class="card">
+              <h2>Informations</h2>
+              <h3>Population</h3>
+              <p id="populate-number"></p>
+              <p>
+                <span id="populate-demonyms-f"></span>/
+                <span id="populate-demonyms-m"></span>
+              </p>
+              <h3>Langue(s)</h3>
+              <p id="languages"></p>
+              <h3>Devise(s)</h3>
+              <div id="currencies"></div>
+              <h3>Continent</h3>
+              <p id="continent"></p>
+            </div>
+            <div class="card" id="capitalCard">
+              <h2>Capitale</h2>
+              <p id="capital"></p>
+              <h3 id="hour-title">Heure locale</h3>
+              <p id="hour"></p>
+              <h3>Météo actuelle</h3>
+              <div id="weather">
+                <svg viewBox="0 0 64 64"></svg>
+              </div>
+              <h3>Température actuelle</h3>
+              <p><span id="temperature"></span>°C</p>
+            </div>
+            <div id="mapcard" class="card">
+              <h2>Carte</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="error" class="hidden">Oups il y a eu une erreur...</section>
+    <script type="module" src="./script.js"></script>
+    <svg style="display: none">
+      <symbol id="sun" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(0 -6)">
+          <circle
+            r="22.97"
+            style="fill: #ffc106"
+            transform="rotate(15 -105.53 137.532) scale(.56228)"
+          />
+          <path
+            d="M32 12.4v2m-9.8.63c.76 1.32 1 1.73 1 1.73m-8.17 5.44c1.32.76 1.73 1 1.73 1M12.4 32h2m.63 9.8c1.32-.76 1.73-1 1.73-1m5.44 8.17c.76-1.32 1-1.73 1-1.73M32 51.6v-2m9.8-.63c-.76-1.32-1-1.73-1-1.73m8.17-5.44c-1.32-.76-1.73-1-1.73-1M51.6 32h-2m-.63-9.8c-1.32.76-1.73 1-1.73 1m-5.44-8.17c-.76 1.32-1 1.73-1 1.73"
+            style="
+              fill: none;
+              stroke: #ffc106;
+              stroke-width: 2.5;
+              stroke-linecap: round;
+              stroke-linejoin: bevel;
+              stroke-miterlimit: 22.9256;
+            "
+          />
+        </g>
+      </symbol>
+      <symbol id="cloud1" xmlns="http://www.w3.org/2000/svg">
+        <path
+          id="path8"
+          d="M12.29 49.71h-.1a6.96 6.96 0 0 1-6.97-6.96c0-3.81 3.05-6.9 6.85-6.97.45-6.8 6.1-12.17 13.02-12.17 5.58 0 10.34 3.5 12.2 8.43.52-.1 1.06-.14 1.61-.14 4.52 0 8.27 3.38 8.83 7.75 2.78 0 5.03 2.26 5.03 5.03a5.03 5.03 0 0 1-4.91 5.03h-22.9Z"
+          style="fill: #1ab5ed"
+        />
+      </symbol>
+      <symbol id="cloud2" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M5.88 52.64c-.2-.05-.4-.1-.59-.16.19.06.39.11.59.16zm-.97-.29zm-1.09-.49zm-3.3-3.3zm-.62-1.48zm7.68-10.63c.1-1.5.42-2.94.91-4.28-.49 1.34-.8 2.78-.9 4.28Zm17.541-12.898c3.9-7.98 15.067-4.893 15.969 2.358 8.879-.358 12.808 6.307 10.115 15.15 0 0-1.266-1.417-3.475-1.41-.818-5.4-5.586-8.343-10.44-7.61-1.828-4.416-5.135-7.8-12.169-8.488z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: evenodd"
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="rain1">
+        <path
+          id="path6"
+          d="M16.732 51.33c.24-.64.96-.96 1.6-.72.65.24.97.96.73 1.6l-1.52 4.05c-.24.64-.96.97-1.61.72-.64-.24-.97-.96-.73-1.6zm18.55 0c.24-.64.96-.96 1.61-.72.64.24.96.96.72 1.6l-1.52 4.05c-.24.64-.96.97-1.61.72-.64-.24-.97-.96-.72-1.6z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: nonzero"
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="rain2">
+        <path
+          id="path6"
+          d="M26.642 51.34c.24-.64.96-.97 1.6-.73.64.24.97.96.73 1.6l-2.79 7.52c-.24.64-.96.97-1.6.73a1.24 1.24 0 0 1-.73-1.6z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: nonzero"
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="rain3">
+        <path
+          id="path6-2"
+          d="M43.41 51.34c.262-.64 1.034-.97 1.741-.73.697.24 1.056.96.795 1.6l-3.036 7.52c-.261.64-1.045.97-1.741.73-.707-.24-1.066-.96-.805-1.6zm-35.407 0c.26-.64 1.044-.97 1.74-.73.697.24 1.056.96.795 1.6l-3.036 7.52c-.261.64-1.044.97-1.74.73-.708-.24-1.056-.96-.795-1.6z"
+          style="
+            clip-rule: evenodd;
+            fill: #0e6096;
+            fill-rule: nonzero;
+            stroke-width: 1.04314;
+          "
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="snow1">
+        <g transform="translate(-3.077 2.71)">
+          <circle
+            id="circle8"
+            cx="25.25"
+            cy="50.96"
+            r="1.97"
+            style="fill: #0e6096; fill-opacity: 1"
+          />
+          <circle
+            id="circle12"
+            cx="38.69"
+            cy="50.96"
+            r="1.97"
+            style="fill: #0e6096; fill-opacity: 1"
+          />
+        </g>
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="snow2">
+        <g transform="translate(-3.077 2.71)">
+          <circle
+            id="circle10"
+            cx="31.97"
+            cy="50.96"
+            r="1.97"
+            style="fill: #0e6096; fill-opacity: 1"
+          />
+        </g>
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="snow3">
+        <g transform="translate(-3.077 2.71)">
+          <circle
+            id="circle6"
+            cx="18.54"
+            cy="50.96"
+            r="1.97"
+            class="fil0"
+            style="fill: #0e6096; fill-opacity: 1"
+          />
+          <circle
+            id="circle14"
+            cx="45.4"
+            cy="50.96"
+            r="1.97"
+            class="fil0"
+            style="fill: #0e6096; fill-opacity: 1"
+          />
+        </g>
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="flash">
+        <path
+          d="M27.735 29.67a1.25 1.25 0 0 1 1.65-.63c.63.29.91 1.03.63 1.65l-5.6 12.4h8.41c.69 0 1.25.56 1.25 1.25 0 .2-.04.39-.13.56l-6.78 17.64c-.25.64-.97.96-1.61.72-.64-.24-.96-.97-.72-1.61l6.18-16.06h-8.54a1.25 1.25 0 0 1-1.14-1.76z"
+          style="clip-rule: evenodd; fill: #e62129; fill-rule: evenodd"
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="fog">
+        <path
+          id="path6"
+          d="M18.101 52.978a1.243 1.243 0 0 1-1.237-1.243 1.24 1.24 0 0 1 1.24-1.248l30.325-.005a1.242 1.242 0 0 1 1.242 1.253 1.248 1.248 0 0 1-1.24 1.247z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: nonzero"
+        />
+        <path
+          id="path1121"
+          d="M18.101 60.978a1.243 1.243 0 0 1-1.237-1.243 1.24 1.24 0 0 1 1.24-1.248l30.325-.005a1.242 1.242 0 0 1 1.242 1.253 1.248 1.248 0 0 1-1.24 1.247z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: nonzero"
+        />
+        <path
+          id="path1123"
+          d="M12.101 56.978a1.243 1.243 0 0 1-1.237-1.243 1.24 1.24 0 0 1 1.24-1.248l30.325-.005a1.242 1.242 0 0 1 1.242 1.253 1.248 1.248 0 0 1-1.24 1.247z"
+          style="clip-rule: evenodd; fill: #0e6096; fill-rule: nonzero"
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="freeze">
+        <path
+          id="path6-4"
+          d="M49.943 57.47a.627.627 0 0 1-.638-.612c-.003-.342.287-.615.64-.615l7.372-.003c.353 0 .643.275.64.618.001.337-.287.614-.64.614z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: #1ab5ed;
+            fill-rule: nonzero;
+            stroke-width: 0.5043;
+          "
+        />
+        <path
+          id="path1667"
+          d="M53.072 53.332c0-.337.289-.61.642-.61a.626.626 0 0 1 .643.611l.003 7.042c0 .337-.287.614-.647.612-.352 0-.643-.275-.643-.611z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: #1ab5ed;
+            fill-rule: nonzero;
+            stroke-width: 0.5043;
+          "
+        />
+        <path
+          id="path1749"
+          d="M56.738 59.009a.593.593 0 0 1-.002.864.661.661 0 0 1-.908.003l-5.215-4.978a.593.593 0 0 1 .004-.869.666.666 0 0 1 .908-.002z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: #1ab5ed;
+            fill-rule: nonzero;
+            stroke-width: 0.5043;
+          "
+        />
+        <path
+          id="path1850"
+          d="M55.886 53.97a.663.663 0 0 1 .906.001c.254.24.251.628.003.867l-5.212 4.981a.662.662 0 0 1-.91-.004.596.596 0 0 1-.003-.867z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: #1ab5ed;
+            fill-rule: nonzero;
+            stroke-width: 0.5043;
+          "
+        />
+      </symbol>
+      <symbol xmlns="http://www.w3.org/2000/svg" id="close-cross">
+        <path
+          id="path1749"
+          d="M56.715 48.593c2.015 1.919 1.992 5.052-.017 6.976-2.027 1.961-5.307 1.94-7.322.021L7.297 15.43c-2.015-1.919-2.03-5.068.034-7.013 2.01-1.925 5.307-1.94 7.322-.021Z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: var(--primary-color);
+            fill-rule: nonzero;
+            stroke-width: 4.06889;
+          "
+        />
+        <path
+          id="path1850"
+          d="M49.372 8.395c2.01-1.925 5.29-1.904 7.305.016 2.053 1.935 2.03 5.068.022 6.993l-42.047 40.19c-2.01 1.925-5.307 1.94-7.343-.032-2.015-1.92-2.03-5.069-.022-6.994Z"
+          class="fil0"
+          style="
+            clip-rule: evenodd;
+            fill: var(--primary-color);;
+            fill-rule: nonzero;
+            stroke-width: 4.06889;
+          "
+        />
+      </symbol>
+    </svg>
+  </body>
+</html>
