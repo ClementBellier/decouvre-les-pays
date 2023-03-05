@@ -168,20 +168,20 @@ const displayInfos = (countryData) => {
   changeTextContent("#continent", countryData.continents[0]);
 };
 
-const displayCapitalCurrentHour = async ([lat, lng]) => {
-  const timeApiUrl = `https://www.timeapi.io/api/Time/current/coordinate?latitude=${lat}&longitude=${lng}`;
-  const capitalHour = await fetch(timeApiUrl)
-    .then((res) => {
-      return res.json();
-    })
-    .catch((err) => console.error(err));
-  if (!capitalHour) {
-    document.querySelector("#hour-title").classList.add("hidden");
-    document.querySelector("#hour").classList.add("hidden");
-    return;
-  }
-  changeTextContent("#hour", capitalHour);
-};
+// const displayCapitalCurrentHour = async ([lat, lng]) => {
+//   const timeApiUrl = `https://www.timeapi.io/api/Time/current/coordinate?latitude=${lat}&longitude=${lng}`;
+//   const capitalHour = await fetch(timeApiUrl)
+//     .then((res) => {
+//       return res.json();
+//     })
+//     .catch((err) => console.error(err));
+//   if (!capitalHour) {
+//     document.querySelector("#hour-title").classList.add("hidden");
+//     document.querySelector("#hour").classList.add("hidden");
+//     return;
+//   }
+//   changeTextContent("#hour", capitalHour);
+// };
 
 const displayWeatherSvg = (weatherCode) => {
   const weatherSvgToDisplay =
@@ -206,7 +206,7 @@ const displayCapitalInfo = async (countryData) => {
   if (countryData.capitalInfo.latlng) {
     const capitalLatLng = countryData.capitalInfo.latlng;
     changeTextContent("#capital", countryData.capital);
-    await displayCapitalCurrentHour(capitalLatLng);
+    //await displayCapitalCurrentHour(capitalLatLng);
     await displayCapitalWeather(capitalLatLng);
     return;
   }
@@ -240,9 +240,7 @@ const handleScrollForShadow = (element) => {
   const rightShadow = document.querySelector("#rightShadow");
   const contentScrollWidth =element.scrollWidth - wrapper.offsetWidth
   element.addEventListener("scroll", (e) => {
-    console.log(element.scrollLeft)
     const currentScroll = element.scrollLeft / contentScrollWidth;
-    console.log({contentScrollWidth, elementScroll : element.scrollLeft, currentScroll});
     leftShadow.style.opacity = currentScroll;
     rightShadow.style.opacity = 1 - currentScroll;
   });
