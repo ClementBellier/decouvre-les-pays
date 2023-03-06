@@ -58,7 +58,7 @@ const displayMap = (countryData) => {
   const countryName = countryData.name.common;
   const latLngCountry = [countryData.latlng[0], countryData.latlng[1]];
   let latLngCapital = [countryData.latlng[0], countryData.latlng[1]];
-  if (countryData.capitalInfo.latlng.length > 0)
+  if (Object.keys(countryData.capitalInfo).length > 0)
     latLngCapital = [
       countryData.capitalInfo.latlng[0],
       countryData.capitalInfo.latlng[1],
@@ -113,8 +113,8 @@ const needScroll = (element, itemsArray) => {
 const displayLanguages = (languages) => {
   const element = document.querySelector("#languages");
   element.innerHTML = "";
-  needScroll(element, Object.values(languages));
   if (languages) {
+    needScroll(element, Object.values(languages));
     Object.values(languages).forEach(
       (language) => (element.innerHTML += `<span>${language}</span>`)
     );
@@ -124,8 +124,8 @@ const displayLanguages = (languages) => {
 const displayCurrencies = (currencies) => {
   const element = document.querySelector("#currencies");
   element.innerHTML = "";
-  needScroll(element, Object.values(currencies));
   if (currencies) {
+    needScroll(element, Object.values(currencies));
     Object.values(currencies).forEach((currencie) => {
       let html = `<p><span>${currencie.symbol}</span> ${currencie.name}</p>`;
       if (!currencie.symbol) html = `<p>${currencie.name}</p>`;

@@ -13,17 +13,17 @@
     <title>Concours Le Repaire du Web - API REST</title>
   </head>
   <body>
-    <section id="all" class="ontop">
+    <section id="all" class="all">
       <header>
         <h1>Découvre les pays</h1>
         <p>Clique sur un drapeau pour en savoir plus</p>
       </header>
-      <div id="list" class="scrollbar"><div id="loader" class="loader"></div></div>
+      <div id="list" class="scrollbar list"><div id="loader" class="loader"></div></div>
     </section>
-    <section id="country" class="disappear">
+    <section id="country" class="disappear country">
       <div id="countryLoader" class="background-loader"><div class="loader"></div></div>
       <header>
-        <img id="flag" src="" alt="" />
+        <img id="flag" src="" alt="" class="flag" />
         <div>
           <h1 id="name"></h1>
           <p id="official"></p>
@@ -46,19 +46,19 @@
                 <span id="populate-demonyms-m"></span>
               </p>
               <h3>Langue(s)</h3>
-              <p id="languages"></p>
+              <p id="languages" class="languages"></p>
               <h3>Devise(s)</h3>
-              <div id="currencies"></div>
+              <div id="currencies" class="currencies"></div>
               <h3>Continent</h3>
               <p id="continent"></p>
             </div>
             <div class="card" id="capitalCard">
               <h2>Capitale</h2>
-              <p id="capital"></p>
+              <p id="capital" class="capital"></p>
               <!-- <h3 id="hour-title">Heure locale</h3>
               <p id="hour"></p> -->
               <h3>Météo actuelle</h3>
-              <div id="weather">
+              <div id="weather" class="weather">
                 <svg viewBox="0 0 64 64"></svg>
               </div>
               <h3>Température actuelle</h3>
